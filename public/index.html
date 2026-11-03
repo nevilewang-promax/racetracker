@@ -1,3 +1,22 @@
-/* example of how a client html page connects with socket IO */
+<!-- example of how a client html page connects with socket IO -->
 
 <div>Public Page</div>
+<p id="auth-success" hidden>Front Desk authentication successful</p>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io({
+        auth: {
+            interface:'front-desk',
+            accessKey: 'test-front'
+        }
+    })
+    socket.on('connect_error', (error) => {
+        console.error('Failed on Connection: ', error.message);
+    });
+    socket.on("server:welcome", (message) => {
+        console.log(message)
+        document.getElementById("auth-success").hidden = false
+    })
+</script>
