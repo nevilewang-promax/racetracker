@@ -1,0 +1,25 @@
+{
+  "name": "racetracker",
+  "version": "1.0.0",
+  "description": "A real-time racetrack management and information display system.",
+  "homepage": "https://github.com/nevilewang-promax/racetracker#readme",
+  "bugs": {
+    "url": "https://github.com/nevilewang-promax/racetracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nevilewang-promax/racetracker.git"
+  },
+  "license": "ISC",
+  "author": "Aman Xinyu",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --env-file=.env index.js",
+    "dev": "node --env-file=.env index.js --dev"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.4"
+  }
+}
