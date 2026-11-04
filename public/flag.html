@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Race Flags</title>
+</head>
+
+<body>
+<div class = "flags">
+    <div id = "safe" class="hidden">safe</div>
+    <div id = "hazard" class="hidden">hazard</div>
+    <div id = "danger" class="hidden">danger</div>
+    <div id = "ended" class="hidden">ended</div>
+    
+</div>
+
+<p id="status"></p>
+
+
+
+
+
+
+    
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io({ autoConnect: false })
+  socket.on("server:welcome", (message) => {
+      console.log(message)
+  })
+
+  socket.auth = {
+    interface: "race-flags"
+  }
+  socket.connect()
+
+  socket.on("connect_error", (error) => {
+      status.textContent = error.data?.code ?? error.message
+  })
+
+  socket.on("disconnect", () => {
+      status.textContent = "Disconnected"
+  })
+
+</script>
