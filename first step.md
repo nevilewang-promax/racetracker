@@ -100,7 +100,7 @@ References: [Socket.IO authentication middleware and connection errors](https://
 Proposed Front Desk data:
 
 - Session: `id` (number), `status` (`upcoming` initially), `entries` (array).
-- Entry: `id` (number), `name` (string), `carNumber` (number).
+- Entry: `name` (string), `carNumber` (number). Locate an entry using the session ID and current name.
 - State snapshot: `sessions` (array of upcoming sessions).
 
 ### Example State Snapshot
@@ -114,8 +114,8 @@ This is the data sent with `front-desk:state`. Aman can use the same shape as mo
       "id": 1,
       "status": "upcoming",
       "entries": [
-        { "id": 1, "name": "Alice", "carNumber": 1 },
-        { "id": 2, "name": "Bob", "carNumber": 2 }
+        { "name": "Alice", "carNumber": 1 },
+        { "name": "Bob", "carNumber": 2 }
       ]
     },
     {
@@ -130,22 +130,23 @@ This is the data sent with `front-desk:state`. Aman can use the same shape as mo
 - `sessions` contains two upcoming race sessions, in queue order.
 - Session 1 has two entries (driver registrations): Alice in car 1 and Bob in car 2.
 - Session 2 exists but has no drivers yet, so its `entries` is an empty array.
-- A session ID identifies a race; an entry ID identifies a registration; a car number identifies the assigned car. They have different purposes even when their numbers happen to match.
-- The server assigns IDs and cars. To add Charlie to session 2, the client sends only `sessionId: 2` and `name: "Charlie"`; the next snapshot contains the new entry.
+- A session ID identifies a race. Within that race, the current name identifies a registration, and the car number identifies the automatically assigned car.
+- The server assigns session IDs and cars. To add Charlie to session 2, the client sends only `sessionId: 2` and `name: "Charlie"`; the next snapshot contains the new entry.
 - If there are no upcoming sessions, the snapshot is `{ "sessions": [] }`.
 
 This snapshot contains only current Front Desk data, not keys, race history, or a database backup. After an accepted change, the server sends a new snapshot and the page renders the updated list.
 
-IDs stay stable after deletion. Trim names; reject empty names and same-session duplicates. Allow at most eight entries and assign unique car numbers within each session. Agree name case-sensitivity and car-assignment order together.
+Session IDs stay stable after deletion. Trim names; reject empty names and same-session duplicates. Allow at most eight entries and assign unique car numbers within each session. Agree name case-sensitivity and car-assignment order together.
 
 | Client event | Payload |
 |---|---|
 | `session:create` | Empty object |
 | `session:remove` | `sessionId` |
 | `driver:add` | `sessionId`, `name` |
-| `driver:edit` | `sessionId`, `entryId`, `name` |
-| `driver:remove` | `sessionId`, `entryId` |
+| `driver:edit` | `sessionId`, `name`, `newName` |
+| `driver:remove` | `sessionId`, `name` |
 
+- For editing, `name` is the current name. Validate `newName` against other entries in the session, preserve the assigned car, and use the new name in subsequent requests.
 - Use a Socket.IO acknowledgement for each request: `ok` (boolean), and `error` with `code` and `message` on failure.
 - Send `front-desk:state` with the full snapshot after authentication/reconnection and after accepted changes to all authorized Front Desk connections.
 - The browser displays server-approved results; rejected requests show errors without changing saved state.

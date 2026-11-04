@@ -130,14 +130,33 @@ if (process.exitCode!==1) {
     })
 
 
-    const sessions = [] //race sessions shared by all clients
+    const races = {
+  "sessions": [
+    {
+      "id": 1,
+      "status": "upcoming",
+      "entries": [
+        {"name": "Alice", "carNumber": 1 },
+        {"name": "Bob", "carNumber": 2 }
+      ]
+    },
+    {
+      "id": 2,
+      "status": "upcoming",
+      "entries": []
+    }
+    
+  ],
+  "nextSessionId": 3
+};//race sessions shared by all clients
 
 
     io.on('connection', (socket) => {
         console.log("client connected")
         socket.emit("server:welcome", "welcome to Racetracker")
         if (socket.data.role==="receptionist") {
-            setUpFrontDesk(socket, sessions)
+            socket.join("front-desk")
+            setUpFrontDesk(socket, races, io)
         }
     })
 
@@ -146,11 +165,3 @@ if (process.exitCode!==1) {
     })
 }
 
-// async function serverRespond (fileName, res) {
-//     const fileURL = `./public/${fileName}`
-//     const content = await readFile(fileURL, 'utf8')
-//     res.writeHead(200, {
-//         "Content-Type": "text/html; charset=utf-8"
-//     })
-//     res.end(content)
-// }

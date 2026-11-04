@@ -35,8 +35,8 @@ Keep keys out of Git, URLs, logs, browser storage, and snapshots.
 | Client → server | `session:create` | `{}` |
 | Client → server | `session:remove` | `sessionId` |
 | Client → server | `driver:add` | `sessionId`, `name` |
-| Client → server | `driver:edit` | `sessionId`, `entryId`, `name` |
-| Client → server | `driver:remove` | `sessionId`, `entryId` |
+| Client → server | `driver:edit` | `sessionId`, `name`, `newName` |
+| Client → server | `driver:remove` | `sessionId`, `name` |
 | Server → client | `front-desk:state` | `{ sessions: [...] }` on connect, reconnect, and successful changes |
 
 | Rule | Agreement |
@@ -44,7 +44,8 @@ Keep keys out of Git, URLs, logs, browser storage, and snapshots.
 | Authorization | Check `socket.data.role` for every action. Front Desk requires `receptionist`. |
 | Acknowledgement | `{ ok: true }` or `{ ok: false, error: { code, message } }`. |
 | Session | Numeric `id`, `status`, `entries`. Create as `upcoming` with `entries: []`. Edit or remove upcoming sessions only. |
-| Entry | Numeric `id`, string `name`, numeric `carNumber`. Server assigns stable IDs and unique car numbers per session. |
+| Entry | String `name`, numeric `carNumber`. Locate by session ID + current name. Server automatically assigns unique car numbers per session. |
+| Rename | `name` is the current name. Validate `newName` against other entries, preserve the car, and use the new name in later requests. |
 | Validation | Trim names. Reject blanks, same-session duplicates, and a ninth driver. |
 | Snapshot | Upcoming sessions in ascending ID order. Empty snapshot is `{ "sessions": [] }`. |
 
@@ -54,7 +55,7 @@ Keep keys out of Git, URLs, logs, browser storage, and snapshots.
     {
       "id": 1,
       "status": "upcoming",
-      "entries": [{ "id": 1, "name": "Alice", "carNumber": 3 }]
+      "entries": [{ "name": "Alice", "carNumber": 3 }]
     }
   ]
 }
