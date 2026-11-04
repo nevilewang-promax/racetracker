@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { readFile } from 'node:fs/promises';
+import {setUpFrontDesk} from "./server/handler/frontDesk.js"
 
 //read passkeys from env file
 const receptionistKey = process.env.RECEPTIONIST_KEY
@@ -83,6 +84,7 @@ if (process.exitCode!==1) {
     //middlewhere: check public/game officer + check needed passkey
     io.use((socket,next) =>{
         const err = new Error("not authorized")
+        
         const key = socket.handshake.auth.accessKey
         const page = socket.handshake.auth.interface
         switch (page) {
@@ -92,6 +94,7 @@ if (process.exitCode!==1) {
                     next()
                     break
                 } else {
+                    err.data = { code: "INVALID_ACCESS_KEY" }
                     setTimeout(()=> next(err),500)
                     break
                 }
@@ -101,6 +104,7 @@ if (process.exitCode!==1) {
                     next()
                     break
                 } else {
+                    err.data = { code: "INVALID_ACCESS_KEY" }
                     setTimeout(()=> next(err),500)
                     break
                 }
@@ -110,6 +114,7 @@ if (process.exitCode!==1) {
                     next()
                     break
                 } else{
+                    err.data = { code: "INVALID_ACCESS_KEY" }
                     setTimeout(()=> next(err),500)
                     break
                 }
@@ -117,6 +122,7 @@ if (process.exitCode!==1) {
                 next()
                 break
             default:{
+                err.data = { code: "INVALID_INTERFACE" }
                 setTimeout(()=> next(err),500)
                 break
             }
@@ -124,9 +130,15 @@ if (process.exitCode!==1) {
     })
 
 
+    const sessions = [] //race sessions shared by all clients
+
+
     io.on('connection', (socket) => {
         console.log("client connected")
         socket.emit("server:welcome", "welcome to Racetracker")
+        if (socket.data.role==="receptionist") {
+            setUpFrontDesk(socket, sessions)
+        }
     })
 
     server.listen(3000, () => {

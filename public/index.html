@@ -13,10 +13,13 @@
         }
     })
     socket.on('connect_error', (error) => {
-        console.error('Failed on Connection: ', error.message);
+        console.error('Failed on Connection: ', error.data?.code, error.message);
     });
     socket.on("server:welcome", (message) => {
         console.log(message)
         document.getElementById("auth-success").hidden = false
+    })
+    socket.on("front-desk:state", (sessions) =>{
+        console.log(sessions)
     })
 </script>
