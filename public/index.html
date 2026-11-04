@@ -1,55 +1,67 @@
-<!-- example of how a client html page connects with socket IO -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Socket.IO Test</title>
+</head>
+<body>
+    <h1>Backend Test</h1>
+    <form id="login">
+        <input id="key" type="password" placeholder="Receptionist key" required>
+        <button>Connect</button>
+    </form>
+    <p id="status">Not connected</p>
+    <button id="test" disabled>Test</button>
+    <pre id="sessions"></pre>
 
-<div>Public Page</div>
-<p id="auth-success" hidden>Front Desk authentication successful</p>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io({ autoConnect: false })
+        const status = document.getElementById("status")
+        const testButton = document.getElementById("test")
 
+        document.getElementById("login").addEventListener("submit", (event) => {
+            event.preventDefault()
+            socket.auth = {
+                interface: "front-desk",
+                accessKey: document.getElementById("key").value
+            }
+            socket.connect()
+        })
 
+        socket.on("server:welcome", (message) => {
+            console.log(message)
+        })
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    const div = document.createElement('div')
-    const addsessionButton = document.createElement('button')
-    addsessionButton.textContent = "try"
+        socket.on("connect_error", (error) => {
+            status.textContent = error.data?.code ?? error.message
+            testButton.disabled = true
+        })
 
+        socket.on("disconnect", () => {
+            status.textContent = "Disconnected"
+            testButton.disabled = true
+        })
 
-    //examples of using socket to receive and send data
-    const socket = io({
-        auth: {
-            interface:'front-desk',
-            accessKey: 'test-front'
+        socket.on("front-desk:state", (snapshot) => {
+            status.textContent = "Authenticated"
+            testButton.disabled = false
+            document.getElementById("sessions").textContent =
+                JSON.stringify(snapshot.sessions, null, 2)
+        })
+
+        function showResponse(response) {
+            console.log(response)
         }
-    })
-    socket.on('connect_error', (error) => {
-        console.error('Failed on Connection: ', error.data?.code, error.message);
-    });
-    socket.on("server:welcome", (message) => { //testing, no meaning
-        console.log(message)
-        document.getElementById("auth-success").hidden = false
-    })
-    socket.on("front-desk:state", (sessions) =>{
-        
-        div.textContent= JSON.stringify(sessions, null, 2)
-    })
-    
-    
-    addsessionButton.addEventListener('click', ()=>{
-        socket.emit("session:create",{}, (response)=>{
-            console.log("session creation: ", response)
-        })
-        socket.emit("session:remove", {sessionId:2}, (response)=>{
-            console.log("session removal: ", response)
-        })
-        socket.emit("driver:add",{sessionId:1, name: "Max"}, (response)=>{
-            console.log("driver add: ", response)
-        })
-        socket.emit("driver:remove", {sessionId:1, name:"Bob"},(response)=>{
-            console.log("driver removal: ", response)
-        })
-        socket.emit("driver:edit", {sessionId:1, name:"Bob", newName: "Max"},(response)=>{
-            console.log("driver edit: ", response)
-        })
-    })
-    document.body.append(addsessionButton,div)
 
-
-</script>
+        testButton.addEventListener("click", () => {
+            // Keep one example active at a time.
+            socket.emit("session:create", {}, showResponse)
+            // socket.emit("session:remove", { sessionId: 2 }, showResponse)
+            // socket.emit("driver:add", { sessionId: 1, name: "Max" }, showResponse)
+            // socket.emit("driver:edit", { sessionId: 1, name: "Alice", newName: "Max" }, showResponse)
+            // socket.emit("driver:remove", { sessionId: 1, name: "Bob" }, showResponse)
+        })
+    </script>
+</body>
+</html>
