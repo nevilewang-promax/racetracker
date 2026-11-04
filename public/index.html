@@ -1,3 +1,55 @@
-/* example of how a client html page connects with socket IO */
+<!-- example of how a client html page connects with socket IO -->
 
 <div>Public Page</div>
+<p id="auth-success" hidden>Front Desk authentication successful</p>
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const div = document.createElement('div')
+    const addsessionButton = document.createElement('button')
+    addsessionButton.textContent = "try"
+
+
+    //examples of using socket to receive and send data
+    const socket = io({
+        auth: {
+            interface:'front-desk',
+            accessKey: 'test-front'
+        }
+    })
+    socket.on('connect_error', (error) => {
+        console.error('Failed on Connection: ', error.data?.code, error.message);
+    });
+    socket.on("server:welcome", (message) => { //testing, no meaning
+        console.log(message)
+        document.getElementById("auth-success").hidden = false
+    })
+    socket.on("front-desk:state", (sessions) =>{
+        
+        div.textContent= JSON.stringify(sessions, null, 2)
+    })
+    
+    
+    addsessionButton.addEventListener('click', ()=>{
+        socket.emit("session:create",{}, (response)=>{
+            console.log("session creation: ", response)
+        })
+        socket.emit("session:remove", {sessionId:2}, (response)=>{
+            console.log("session removal: ", response)
+        })
+        socket.emit("driver:add",{sessionId:1, name: "Max"}, (response)=>{
+            console.log("driver add: ", response)
+        })
+        socket.emit("driver:remove", {sessionId:1, name:"Bob"},(response)=>{
+            console.log("driver removal: ", response)
+        })
+        socket.emit("driver:edit", {sessionId:1, name:"Bob", newName: "Max"},(response)=>{
+            console.log("driver edit: ", response)
+        })
+    })
+    document.body.append(addsessionButton,div)
+
+
+</script>

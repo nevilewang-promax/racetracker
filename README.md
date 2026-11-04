@@ -119,7 +119,6 @@ Upcoming sessions are ordered by numeric ID. New sessions join the end. Creating
 
 ### Driver Entry / Car Timing Record
 
-- Stable entry ID within the system.
 - Editable driver name.
 - Assigned car number.
 - Current lap number.
@@ -130,7 +129,7 @@ Rules:
 
 - A session holds at most eight drivers.
 - Names must be unique within a session, not across the entire system.
-- A name is not a stable ID because it can be edited.
+- Locate a driver entry using the session ID and current name. After a rename, use the new name in subsequent requests.
 - The same person/name may enter different sessions independently.
 - Each entry has an automatically assigned car number, unique within that session.
 - Timing is tracked by car number during the race.
@@ -200,8 +199,8 @@ Agree exact event names, payload field names, success responses, and error respo
 | Create session | None required | Receptionist role | Add Upcoming session |
 | Remove session | Session ID | Receptionist; session exists and is Upcoming | Remove session |
 | Add driver | Session ID, name | Receptionist; Upcoming; valid unique name; fewer than 8 entries | Create entry; assign available car |
-| Edit driver | Session ID, entry ID, name | Receptionist; Upcoming; entry exists; valid unique name | Update name |
-| Remove driver | Session ID, entry ID | Receptionist; Upcoming; entry exists | Remove entry; release car assignment |
+| Edit driver | Session ID, current name, new name | Receptionist; Upcoming; current name exists; new name is valid and unique among other entries | Update name; preserve assigned car |
+| Remove driver | Session ID, name | Receptionist; Upcoming; name exists | Remove entry; release car assignment |
 | Start race | Session ID | Safety role; queue head; Upcoming; at least one driver; no active session | Set Running/Safe; initialize timing and lap records; update active and leaderboard references |
 | Change mode | Session ID, mode | Safety; active Running session; valid mode | Update flag; Finish also enters Finishing |
 | Record crossing | Session ID, car number | Observer; target is active; Running or Finishing; car belongs to session | Update timing, lap, and fastest time |
