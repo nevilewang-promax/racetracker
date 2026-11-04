@@ -4,7 +4,7 @@ export function setUpFrontDesk(socket, races, io) {
     
     
     //send all sessions
-    socket.emit("front-desk:state", races.sessions) 
+    socket.emit("front-desk:state", { sessions: races.sessions }) 
     //create new session
     socket.on("session:create", (emptydata, acknowledge)=>{
         const newSession = {
@@ -15,7 +15,7 @@ export function setUpFrontDesk(socket, races, io) {
         races.nextSessionId += 1
         races.sessions.push(newSession)
         acknowledge({ok: true})
-        io.to("front-desk").emit("front-desk:state", races.sessions)
+        io.to("front-desk").emit("front-desk:state", { sessions: races.sessions })
     })
 
     //remove session
@@ -35,7 +35,7 @@ export function setUpFrontDesk(socket, races, io) {
             
         }
         acknowledge({ok: true})
-        io.to("front-desk").emit("front-desk:state", races.sessions)
+        io.to("front-desk").emit("front-desk:state", { sessions: races.sessions })
 
     })
     
@@ -88,7 +88,7 @@ export function setUpFrontDesk(socket, races, io) {
         races.sessions[sessionIdx].entries.push(newEntry)
 
         acknowledge({ok:true})
-        io.to("front-desk").emit("front-desk:state", races.sessions)
+        io.to("front-desk").emit("front-desk:state", { sessions: races.sessions })
 
 
     }) 
@@ -110,7 +110,7 @@ export function setUpFrontDesk(socket, races, io) {
             races.sessions[sessionIdx].entries.splice(entryInd,1)
         }
         acknowledge({ok:true})
-        io.to("front-desk").emit("front-desk:state", races.sessions)
+        io.to("front-desk").emit("front-desk:state", { sessions: races.sessions })
         
 
     })
@@ -159,7 +159,7 @@ export function setUpFrontDesk(socket, races, io) {
             races.sessions[sessionIdx].entries[entryInd].name = trimNewName
         }
         acknowledge({ok:true})
-        io.to("front-desk").emit("front-desk:state", races.sessions)
+        io.to("front-desk").emit("front-desk:state", { sessions: races.sessions })
         
 
     })
