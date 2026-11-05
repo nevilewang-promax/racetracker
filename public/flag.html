@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/flag.css">
+    <meta charset="utf-8">
+    <title>Race Flags</title>
+</head>
+
+<body>
+<div class = "flags">
+    <div id = "safe" class="flag hidden"></div>
+    <div id = "hazard" class="flag hidden"></div>
+    <div id = "danger" class="flag hidden"></div>
+    <div id = "finish" class="flag shown"></div>
+    
+</div>
+
+<p id="connection status"></p>
+
+
+    
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io({ autoConnect: false })
+  socket.on("server:welcome", (message) => {
+      console.log(message)
+  })
+
+  socket.auth = {
+    interface: "race-flags",
+    accessKey: ""
+  }
+  socket.connect()
+
+  socket.on("connect_error", (error) => {
+      status.textContent = error.data?.code ?? error.message
+  })
+
+  socket.on("disconnect", () => {
+      status.textContent = "Disconnected"
+  })
+
+  socket.on("race-flag:status", (snapshot)=>{
+    const trackMode = snapshot.trackMode
+    console.log(trackMode)
+    
+    const prevFlag = document.querySelector(".shown")
+    
+    if (prevFlag){
+        prevFlag.className = "flag hidden"
+    }
+    const newFlag = document.getElementById(trackMode)
+    newFlag.className= "flag shown"
+
+  })
+
+</script>

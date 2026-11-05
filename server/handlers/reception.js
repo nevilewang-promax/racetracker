@@ -1,7 +1,6 @@
  const carAll= [1,2,3,4,5,6,7,8]
 export function setUpFrontDesk(socket, races, io) {
-   
-    
+
     
     //send all sessions
     socket.emit("front-desk:state", { sessions: races.sessions }) 
@@ -180,15 +179,6 @@ const getSessionIds = (races) =>{
     return ids
 }
 
-// const generateNextSessionId = (races) =>{
-//     if (getSessionIds(races).length==0) {
-//         return 1
-//     } else {
-//         const ids = getSessionIds(races)
-//         return ids.at(-1)+1
-//     }
-
-// }
 
 const getDriverNamesBySessionId = (races, sessionId) =>{
     const index = races.sessions.findIndex(session=> session.id == sessionId)

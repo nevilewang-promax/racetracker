@@ -5,6 +5,7 @@ import { loadConfig } from "./server/config.js"
 import { setUpAuth } from "./server/auth.js"
 import { races } from "./server/state.js"
 import { setUpFrontDesk } from "./server/handlers/reception.js"
+import { setUpControl } from "./server/handlers/control.js"
 
 const config = loadConfig()
 
@@ -12,12 +13,14 @@ if (config) {
     const routes = {
         "/": ["./public/index.html", "text/html"],
         "/front-desk": ["./public/index.html", "text/html"],
-        "/race-control": ["./public/index.html", "text/html"],
+        "/race-control": ["./public/control.html", "text/html"],
         "/lap-line-tracker": ["./public/index.html", "text/html"],
         "/leader-board": ["./public/index.html", "text/html"],
         "/next-race": ["./public/index.html", "text/html"],
         "/race-countdown": ["./public/index.html", "text/html"],
-        "/race-flags": ["./public/index.html", "text/html"],
+        "/race-flags": ["./public/flag.html", "text/html"],
+        "/css/flag.css": ["./public/css/flag.css", "text/css"],
+        "/css/control.css": ["./public/css/control.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {
@@ -49,7 +52,16 @@ if (config) {
         socket.emit("server:welcome", "welcome to Racetracker")
         if (socket.data.role === "receptionist") {
             socket.join("front-desk")
+            socket.join("public")
             setUpFrontDesk(socket, races, io)
+        }
+        if (socket.data.role === "safety") {
+            socket.join("race-control")
+            socket.join("public")
+            setUpControl(socket, races, io)
+        }
+        if(socket.data.role==="public"){
+            socket.join("public")
         }
     })
 

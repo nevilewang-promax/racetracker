@@ -36,13 +36,16 @@ export function setUpAuth(io, config) {
                     setTimeout(()=> next(err),500)
                     break
                 }
-            case "public" :
-                next()
-                break
-            default:{
-                err.data = { code: "INVALID_INTERFACE" }
-                setTimeout(()=> next(err),500)
-                break
+            case "next-race":
+            case "race-countdown":
+            case "race-flags":
+                socket.data.role = "public"
+                next();
+                break;
+          default:{
+              err.data = { code: "INVALID_INTERFACE" }
+              setTimeout(()=> next(err),500)
+              break
             }
         }
     })
