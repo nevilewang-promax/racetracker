@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/control.css">
+    <meta charset="utf-8">
+    <title>Race Control</title>
+</head>
+
+
+<body>
+    <h1>Race Control</h1>
+    <form id="login" class="">
+        <input id="key" type="password" placeholder="Race Controller key" required>
+        <button>Connect</button>
+    </form>
+    <p id="status">Not connected</p>
+
+    <div id="main" class = "hidden">
+        <div id="trackMode" class="buttons">
+            <p>Track Mode</p>
+            <button id="safe">🟢</button>
+            <button id="hazard">🟡</button>
+            <button id="danger">🔴</button>
+            <button id="finish">🏁</button>
+
+        </div>
+        <p id="currentFlag">finished</p>
+    </div>
+    
+    
+</body>
+
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io({ autoConnect: false })
+    const status = document.getElementById("status")
+
+    //check key
+    document.getElementById("login").addEventListener("submit", (event) => {
+            event.preventDefault()
+            socket.auth = {
+                interface: "race-control",
+                accessKey: document.getElementById("key").value
+            }
+            socket.connect()
+    })
+
+    socket.on("server:welcome", (message) => {
+        console.log(message)
+    })
+
+    socket.on("connect_error", (error) => {
+        status.textContent = error.data?.code ?? error.message
+        testButton.disabled = true
+    })
+
+    socket.on("disconnect", () => {
+        status.textContent = "Disconnected"
+        testButton.disabled = true
+    })
+
+    socket.on('connect', () => {
+        document.getElementById('login').classList.add('hidden')
+        document.getElementById('main').classList.remove('hidden')
+    })
+
+    const trackModeButtons = document.getElementById("trackMode")
+    trackModeButtons.addEventListener('click', (event)=>{
+        const button = event.target.closest('button');
+        if (!button) return
+        
+        socket.emit("track-mode:change", {trackMode: button.id}, showResponse)
+    })
+    
+    socket.on("race-flag:status", (snapshot)=>{
+    const trackMode = snapshot.trackMode
+    const newFlag = document.getElementById("currentFlag")
+    newFlag.textContent= trackMode
+
+    })
+
+    function showResponse(response) {
+        console.log(response)
+    }
+
+
+
+</script>

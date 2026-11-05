@@ -30,7 +30,7 @@ body {
   background: red;
 }
 
-#ended {
+#finish {
   background-color: white;
   background-image: conic-gradient(
     black 25%,

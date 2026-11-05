@@ -17,5 +17,5 @@ export const races = {
     
   ],
   "nextSessionId": 3,
-  "trackMode": "Finished"
+  "trackMode": "finish"
 }

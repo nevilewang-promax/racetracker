@@ -11,7 +11,7 @@
     <div id = "safe" class="flag hidden"></div>
     <div id = "hazard" class="flag hidden"></div>
     <div id = "danger" class="flag hidden"></div>
-    <div id = "ended" class="flag shown"></div>
+    <div id = "finish" class="flag shown"></div>
     
 </div>
 
@@ -29,7 +29,8 @@
   })
 
   socket.auth = {
-    interface: "race-flags"
+    interface: "race-flags",
+    accessKey: ""
   }
   socket.connect()
 
@@ -41,9 +42,12 @@
       status.textContent = "Disconnected"
   })
 
-  socket.on("race-flag: status", (snapshot)=>{
+  socket.on("race-flag:status", (snapshot)=>{
     const trackMode = snapshot.trackMode
+    console.log(trackMode)
+    
     const prevFlag = document.querySelector(".shown")
+    
     if (prevFlag){
         prevFlag.className = "flag hidden"
     }
