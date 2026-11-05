@@ -17,7 +17,8 @@ if (config) {
         "/leader-board": ["./public/index.html", "text/html"],
         "/next-race": ["./public/index.html", "text/html"],
         "/race-countdown": ["./public/index.html", "text/html"],
-        "/race-flags": ["./public/index.html", "text/html"],
+        "/race-flags": ["./public/flag.html", "text/html"],
+        "/css/flag.css": ["./public/css/flag.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {

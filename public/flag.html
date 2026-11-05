@@ -1,24 +1,21 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/css/flag.css">
     <meta charset="utf-8">
     <title>Race Flags</title>
 </head>
 
 <body>
 <div class = "flags">
-    <div id = "safe" class="hidden">safe</div>
-    <div id = "hazard" class="hidden">hazard</div>
-    <div id = "danger" class="hidden">danger</div>
-    <div id = "ended" class="hidden">ended</div>
+    <div id = "safe" class="flag hidden"></div>
+    <div id = "hazard" class="flag hidden"></div>
+    <div id = "danger" class="flag hidden"></div>
+    <div id = "ended" class="flag shown"></div>
     
 </div>
 
-<p id="status"></p>
-
-
-
-
+<p id="connection status"></p>
 
 
     
@@ -42,6 +39,17 @@
 
   socket.on("disconnect", () => {
       status.textContent = "Disconnected"
+  })
+
+  socket.on("race-flag: status", (snapshot)=>{
+    const trackMode = snapshot.trackMode
+    const prevFlag = document.querySelector(".shown")
+    if (prevFlag){
+        prevFlag.className = "flag hidden"
+    }
+    const newFlag = document.getElementById(trackMode)
+    newFlag.className= "flag shown"
+
   })
 
 </script>
