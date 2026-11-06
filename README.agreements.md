@@ -60,12 +60,19 @@ Keep keys out of Git, URLs, logs, browser storage, and snapshots.
   ]
 }
 ```
+## Control Contract
+
+| Direction | Event | Payload |
+|---|---|---|
+| Client → server | `race:start` | `{}` |
+| Client → server | `race: end` | `sessionId` |
+
 
 ## Race Rules and Integration
 
 | Area | Agreement |
 |---|---|
-| Lifecycle | `upcoming` → `running` → `finishing` → `ended`. |
+| Lifecycle | `upcoming` → `ongoing` → `finishing` → `ended`. |
 | Flags | Start sets Safe. Hazard and Danger do not pause timing. Manual Finish or timeout sets Finish. End Session sets Danger. |
 | Crossings | Accept during Running and Finishing. Use server timestamps in ms. First crossing starts lap 1. Later crossings complete a lap. |
 | End Session | Safety official confirms all cars are back. Clear the active session and stop crossings. |
