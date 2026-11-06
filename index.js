@@ -6,6 +6,7 @@ import { setUpAuth } from "./server/auth.js"
 import { races } from "./server/state.js"
 import { setUpFrontDesk } from "./server/handlers/reception.js"
 import { setUpControl } from "./server/handlers/control.js"
+import { setUpLapline } from "./server/handlers/tracker.js"
 
 const config = loadConfig()
 
@@ -14,13 +15,14 @@ if (config) {
         "/": ["./public/index.html", "text/html"],
         "/front-desk": ["./public/index.html", "text/html"],
         "/race-control": ["./public/control.html", "text/html"],
-        "/lap-line-tracker": ["./public/index.html", "text/html"],
+        "/lap-line-tracker": ["./public/tracker.html", "text/html"],
         "/leader-board": ["./public/index.html", "text/html"],
         "/next-race": ["./public/index.html", "text/html"],
         "/race-countdown": ["./public/index.html", "text/html"],
         "/race-flags": ["./public/flag.html", "text/html"],
         "/css/flag.css": ["./public/css/flag.css", "text/css"],
         "/css/control.css": ["./public/css/control.css", "text/css"],
+        "/css/tracker.css": ["./public/css/tracker.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {
@@ -62,6 +64,11 @@ if (config) {
         }
         if(socket.data.role==="public"){
             socket.join("public")
+        }
+        if(socket.data.role === "observer") {
+            socket.join("lap-line-tracker")
+            socket.join("public")
+            setUpLapline(socket, races, io)
         }
     })
 

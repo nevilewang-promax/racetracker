@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line tracker</title>
+    <link rel="stylesheet" href="/css/tracker.css">
+</head>
+<body>
+    <h1>Lap line observer</h1>
+    <form id="loginTracker" class="">
+        <input id="key" type="password" placeholder="Race Observer key" required>
+        <button>Connect</button>
+    </form>
+    <p id="statusTracker">Not connected</p>    
+
+    <div id="main-tracker" class="hidden">
+        <div class="race-status"></div>
+        <div class="container">
+            <div class="orientation">
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+   <script src="/socket.io/socket.io.js"></script>
+   <script> 
+        const socket = io({ autoConnect: false })
+        const status = document.getElementById("statusTracker")
+
+        //check key
+        document.getElementById("loginTracker").addEventListener("submit", (event) => {
+                event.preventDefault()
+                socket.auth = {
+                    interface: "lap-line-tracker",
+                    accessKey: document.getElementById("key").value
+                }
+                socket.connect()
+        })        
+
+        socket.on('connect', () => {
+            document.getElementById('loginTracker').classList.add('hidden')
+            document.getElementById('main-tracker').classList.remove('hidden')
+            document.getElementById('statusTracker').innerHTML = "connected"
+        })        
+
+        const orientation = document.querySelector(".orientation")
+
+        socket.on('race-ongoing', (activeRace)=>{
+            activeRace.entries.forEach((entry) => {
+                const button = document.createElement("button")
+                button.innerHTML = entry.carNumber
+                orientation.appendChild(button)
+            });
+            status.innerHTML = activeRace.status
+        })
+        
+   </script>
+</html>

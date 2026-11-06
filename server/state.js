@@ -13,8 +13,15 @@ export const races = {
       "id": 2,
       "status": "upcoming",
       "entries": []
-    }
-    
+    },
+    {
+      "id": 3,
+      "status": "ongoing",
+      "entries": [
+        {"name": "test1", "carNumber": 3 },
+        {"name": "test2", "carNumber": 4 }
+      ]
+    }    
   ],
   "nextSessionId": 3,
   "trackMode": "finish"
