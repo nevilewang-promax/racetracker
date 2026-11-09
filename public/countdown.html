@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown</title>
+    <link rel="stylesheet" href="/css/countdown.css">
+</head>
+<body>
+     <p id="status-countdown">Not connected</p>    
+     <div id="countdown-container">
+        <div id="minutes">10</div>
+        <div id="seconds">00</div>
+     </div>
+</body>
+
+
+   <script src="/socket.io/socket.io.js"></script>
+   <script> 
+        const socket = io({ autoConnect: false })
+        socket.auth = {
+            interface: "race-countdown",
+        }
+        socket.connect()        
+        const status = document.getElementById("status-countdown")
+        socket.on('connect', () => {
+            status.innerHTML = "connected"
+        })           
+
+        let index = -1
+
+        socket.on('race-ongoing', (races)=>{
+            index = getIndexOfOngoingRace(races.sessions)
+            const activeRace = selectActiveSession(races.sessions)
+            if (activeRace === null) {
+                status.innerHTML = "no ongoing race"
+                return
+            }
+            startCountdown(races)
+        })
+
+        let timer;       
+
+        function startCountdown(races) {
+            clearInterval(timer);
+            let min = 9
+            let sec = 59;
+            displayTime(min, sec);
+
+            timer = setInterval(function() {
+                sec--;
+                if (sec === 0) {
+                    if (min !== 0) {
+                        min--
+                    }
+                    if (min === 0 && sec === 0) {
+                        status.innerHTML = "ended"
+                        clearInterval(timer);
+                        document.getElementById("countdown-container").classList.add("hide")
+                    }
+                    sec = 59                                                
+                }    
+                const activeRace = selectActiveSession(races.sessions)
+                activeRace.countdown = {"min":min, "sec":sec}
+                displayTime(min, sec);
+                races.sessions[index] = activeRace
+                socket.emit('countdown-started', index, {"min":min, "sec":sec})
+            }, 1000);
+        }
+
+        function displayTime(min, sec) {
+            const minutes = document.getElementById("minutes"); 
+            minutes.innerHTML = min     
+            const seconds = document.getElementById("seconds"); 
+            seconds.innerHTML = sec                
+        } 
+                
+        function getIndexOfOngoingRace(races) {
+            let index = - 1
+
+            races.forEach((race) => {
+                if (race.status === "ongoing") {
+                    index = race.id - 1
+                }
+            });
+
+            return index
+        }   
+
+        function selectActiveSession(races) {
+            return races.find((race) => race.status === "ongoing");
+        }        
+
+   </script>
+</html>

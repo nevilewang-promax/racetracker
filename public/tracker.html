@@ -44,19 +44,33 @@
         socket.on('connect', () => {
             document.getElementById('loginTracker').classList.add('hidden')
             document.getElementById('main-tracker').classList.remove('hidden')
-            document.getElementById('statusTracker').innerHTML = "connected"
+            status.innerHTML = "connected"
         })        
 
         const orientation = document.querySelector(".orientation")
+        let countDown = {} 
 
         socket.on('race-ongoing', (activeRace)=>{
+            if (activeRace === null) {
+                status.innerHTML = "no ongoing race"
+                return
+            }
+
             activeRace.entries.forEach((entry) => {
                 const button = document.createElement("button")
                 button.innerHTML = entry.carNumber
+                button.classList.add("cars")
                 orientation.appendChild(button)
+                button.addEventListener("click", ()=> {
+                    console.log(countDown)
+                })
             });
-            status.innerHTML = activeRace.status
+            status.innerHTML = "race is " + activeRace.status
         })
         
+        socket.on('countdown-started', (index, countdown)=>{
+            countDown = countdown
+        })       
+
    </script>
 </html>

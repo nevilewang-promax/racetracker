@@ -7,6 +7,7 @@ import { races } from "./server/state.js"
 import { setUpFrontDesk } from "./server/handlers/reception.js"
 import { setUpControl } from "./server/handlers/control.js"
 import { setUpLapline } from "./server/handlers/tracker.js"
+import { setUpCountDown } from "./server/handlers/coutdown.js"
 
 const config = loadConfig()
 
@@ -18,11 +19,12 @@ if (config) {
         "/lap-line-tracker": ["./public/tracker.html", "text/html"],
         "/leader-board": ["./public/index.html", "text/html"],
         "/next-race": ["./public/index.html", "text/html"],
-        "/race-countdown": ["./public/index.html", "text/html"],
+        "/race-countdown": ["./public/countdown.html", "text/html"],
         "/race-flags": ["./public/flag.html", "text/html"],
         "/css/flag.css": ["./public/css/flag.css", "text/css"],
         "/css/control.css": ["./public/css/control.css", "text/css"],
         "/css/tracker.css": ["./public/css/tracker.css", "text/css"],
+        "/css/countdown.css": ["./public/css/countdown.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {
@@ -70,6 +72,13 @@ if (config) {
             socket.join("public")
             setUpLapline(socket, races, io)
         }
+        if(socket.data.role === "public") {
+            socket.join("public")
+            setUpCountDown(socket, races, io)
+            //socket.on('countdown-started', (index, countdown)=>{
+            //    races.sessions[index].countdown = countdown
+            //})
+        }        
     })
 
     server.listen(config.port, () => {
