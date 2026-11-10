@@ -28,7 +28,7 @@ socket.on("connect_error", (error) => {
 })
 
 socket.on("disconnect", () => {
-    connectStatustextContent = "Disconnected"
+    connect.StatustextContent = "Disconnected"
 
 })
 
@@ -40,18 +40,18 @@ const cardTemplate = document.getElementById("session-card-template")
 socket.on("front-desk:state", ({ sessions }) => {
     sessionList.replaceChildren()
 
-    if (sessions.length === 0) {
-        sessionList.textContent = "No existing sessions"
-        return
-    }
+    // if (sessions.length === 0) {
+    //     sessionList.textContent = "No existing sessions"
+    //     return
+    // }
 
     for (const session of sessions) {
         const card = cardTemplate.content.firstElementChild.cloneNode(true)
 
         card.querySelector("h3").textContent = `Session #${session.id}`
-        card.querySelector(".session-card-header p").textContent =
-            `${session.entries.length} / 8 drivers`
+        card.querySelector(".session-card-header p").textContent = `${session.entries.length} / 8 drivers`
 
+ 
         const tbody = card.querySelector("tbody")
         const rowTemplate = tbody.querySelector("tr")
         tbody.replaceChildren()
@@ -62,6 +62,18 @@ socket.on("front-desk:state", ({ sessions }) => {
             row.cells[1].textContent = `#${entry.carNumber}`
             tbody.append(row)
         }
+
+        //delete session
+        const deleteSessionBtn = card.querySelector(".btn-delete-session")
+        deleteSessionBtn.addEventListener("click", (e)=>{
+            const confirmed = window.confirm(`Delete Session #${session.id} and remove all its drivers?`)
+            if (!confirmed) return
+            socket.emit("session:remove", {sessionId: session.id}, showResponse)
+        })
+        //add driver
+        const addDriverBtn= card.querySelector(".btn-add-driver")
+        addDriverBtn.classList.toggle("hidden", session.entries.length >= 8)
+
 
         sessionList.append(card)
     }
