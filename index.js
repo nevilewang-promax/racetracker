@@ -22,6 +22,7 @@ if (config) {
         "/css/flag.css": ["./public/css/flag.css", "text/css"],
         "/css/control.css": ["./public/css/control.css", "text/css"],
         "/css/reception.css": ["./public/css/reception.css", "text/css"],
+        "/js/reception.js": ["./public/js/reception.js", "text/javascript"],
     }
 
     const server = createServer(async (req, res) => {

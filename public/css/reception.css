@@ -1,3 +1,169 @@
 .hidden{
     display: none;
 }
+
+.session-card {
+    box-sizing: border-box; /* Include padding and borders in the card's width. */
+    width: calc(100% - 2rem); /* Reserve 2rem of horizontal space, 1rem per side when centered. */
+    max-width: 640px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.session-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.session-card .session-title-row .btn-delete-session {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin-left: auto;
+    padding: 0;
+    border-color: transparent;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.session-card .session-title-row .btn-delete-session:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.session-title-row h3 {
+    margin: 0;
+}
+
+.driver-table {
+    width: 100%;
+    border-collapse: collapse; /* Merge adjacent cell borders into a single border. */
+}
+
+.driver-table th,
+.driver-table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.session-card-actions {
+    margin-top: 16px;
+}
+
+.session-card button {
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font: inherit; /* Use the parent font settings; the next line overrides the size. */
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.session-card .btn-primary {
+    background: #5378dd;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.session-card .btn-secondary {
+    background: white;
+    border-color: #cbd5e1;
+    color: black;
+}
+
+.session-card .btn-danger {
+    background: white;
+    border-color: #b91c1c;
+    color: #b91c1c;
+}
+
+.session-card .btn-danger:hover {
+    background: #fef2f2;
+}
+
+.session-card .btn-primary:hover {
+    background:  #4064c7;
+}
+
+.session-card .btn-secondary:hover {
+    background: #dcdde094;
+}
+
+.driver-table td button + button { /* Select a button immediately following another button in the same cell. */
+    margin-left: 8px;
+}
+
+.header-row{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-row #status {
+    margin-left: auto;
+}
+
+
+
+#top-btn:not(.hidden) { /* Apply the flex layout only when the navigation is visible. */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: calc(100% - 2rem); /* Leave at least 1rem on each side when centered. */
+    max-width: 640px;
+    margin: 16px auto;
+
+
+}
+
+.header-btn {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #334155;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.header-btn:hover {
+    background: #e2e8f0;
+}
+
+#create-session {
+    margin-left: auto;
+    background: #5378dd;
+    color: white;
+}
+
+#create-session:hover {
+    background: #4064c7;
+}
+
+
+
+
+
+
+
+body {
+    margin: 0;
+    height: 100dvh; /* Match the current viewport height. */
+    display: flex;
+    flex-direction: column;
+}
+
+#session-list {
+    flex: 1; /* Fill the space below the header and navigation. */
+    min-height: 0; /* Let the list shrink below the height of its cards. */
+    overflow-y: auto; /* Scroll the card list vertically when its content overflows. */
+}
