@@ -3,7 +3,7 @@ export const races = {
   "sessions": [
     {
       "id": 1,
-      "status": "upcoming", // ongoing, finishing, ended
+      "status": "finishing", // ongoing, finishing, ended
       "entries": [
         {"name": "Alice", "carNumber": 1 },
         {"name": "Bob", "carNumber": 2 }

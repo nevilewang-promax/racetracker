@@ -167,3 +167,72 @@ body {
     min-height: 0; /* Let the list shrink below the height of its cards. */
     overflow-y: auto; /* Scroll the card list vertically when its content overflows. */
 }
+
+
+
+.add-driver-form {
+    margin-top: 12px;
+}
+
+.add-driver-form label {
+    display: block;
+    color: #334155;
+    font-size: 14px;
+}
+
+.add-driver-form input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 6px 0 12px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #0f172a;
+    font: inherit;
+}
+
+.add-driver-form input:focus {
+    border-color: #5378dd;
+    outline: 2px solid #5378dd;
+    outline-offset: 2px;
+    background: white;
+}
+
+
+
+.header-row {
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px 0;
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: system-ui, sans-serif;
+}
+
+.header-row h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 650;
+}
+
+.header-row #status {
+    margin: 0 0 0 auto;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#login {
+    text-align: center;
+}
