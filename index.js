@@ -54,12 +54,12 @@ if (config) {
         console.log("client connected")
         socket.emit("server:welcome", "welcome to Racetracker")
         if (socket.data.role === "receptionist") {
-            socket.join("front-desk")
+            socket.join("staff")
             socket.join("public")
             setUpFrontDesk(socket, races, io)
         }
         if (socket.data.role === "safety") {
-            socket.join("race-control")
+            socket.join("staff")
             socket.join("public")
             setUpControl(socket, races, io)
         }

@@ -29,48 +29,47 @@
         <p id="currentFlag">finished</p>
     </div>
 
-    <div id="current-session" class = "hidden">
-        <template id="session-card-template">
-            <article class="session-card">
-                <header class="session-card-header">
-                    <div class="session-title-row">
-                        <h3>No sessions</h3>
-                    </div>
-                    <p>0 / 8 drivers</p>
-                </header>
+    <div id="current-session" class = "hidden"></div>
+    <template id="session-card-template">
+    <article class="session-card">
+        <header class="session-card-header">
+            <div class="session-title-row">
+                <h3>No sessions</h3>
+            </div>
+            <p>0 / 8 drivers</p>
+        </header>
 
-                <table class="driver-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Driver</th>
-                            <th scope="col">Car</th>
-                            <th scope="col">Pit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <!-- checkbox -->
-                                <input type="checkbox" class="pit-return-check">
-                                    
-                            </td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
-            </article>
-        </template>
-    </div>
+        <table class="driver-table">
+            <thead>
+                <tr>
+                    <th scope="col">Driver</th>
+                    <th scope="col">Car</th>
+                    <th scope="col">Pit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <!-- checkbox -->
+                        <input type="checkbox" class="pit-return-check">
+                            
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </article>
+</template>
 
 
 
 
     <div id="session-control-btns" class = "hidden">
-        <button id="start-session" class = "control-btn">START</button>
-        <button id="finish-session" class = "control-btn">FINISH</button>
-        <button id="end-session" class = "control-btn">END</button>
+        <button id="start-session" class = "control-btn" disabled>START</button>
+        <button id="finish-session" class = "control-btn" disabled>FINISH</button>
+        <button id="end-session" class = "control-btn" disabled>END</button>
     </div>
     
 
