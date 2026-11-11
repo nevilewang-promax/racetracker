@@ -6,6 +6,7 @@ const startbutton = document.getElementById("start-session")
 const finishbutton = document.getElementById("finish-session")
 
 
+
 //check key
 document.getElementById("login").addEventListener("submit", (event) => {
 event.preventDefault()
@@ -41,6 +42,9 @@ socket.on("disconnect", () => {
 
 //track mode control
 const trackModeButtons = document.getElementById("trackMode")
+const safeBtn = document.getElementById("safe")
+const hazardBtn = document.getElementById("hazard")
+const dangerBtn = document.getElementById("danger")
 trackModeButtons.addEventListener('click', (event)=>{
 const button = event.target.closest('button');
 if (!button) return
@@ -51,7 +55,7 @@ socket.emit("race-flag:change", {trackMode: button.id}, showResponse)
 socket.on("race-flag:status", (snapshot)=>{
 const trackMode = snapshot.trackMode
 const newFlag = document.getElementById("currentFlag")
-newFlag.textContent= trackMode
+newFlag.textContent= `Current Flag: ${trackMode}`
 
 })
 
@@ -60,10 +64,21 @@ newFlag.textContent= trackMode
 socket.on("front-desk:state", ({ sessions }) => {
     currentSession = sessions.find(session => session.status!="ended")
     endbutton.disabled = true
+    safeBtn.disabled= true
+    hazardBtn.disabled= true
+    dangerBtn.disabled = true
+
     if (!currentSession) {
         document.getElementById("current-session").textContent="No Active Sessions"
         return
     }
+
+
+    //enable track buttons only when "ongoing"
+    safeBtn.disabled = currentSession.status != "ongoing"
+    dangerBtn.disabled = currentSession.status != "ongoing"
+    hazardBtn.disabled = currentSession.status != "ongoing"
+
 
     const template = document.getElementById("session-card-template")
     const container = document.getElementById("current-session")
@@ -114,10 +129,13 @@ startbutton.addEventListener("click", e=>{
     socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "ongoing"},showResponse)
     //start timer
     //socket.emit("countdown-started")
+    //change flag
+    socket.emit("race-flag:change", {trackMode: "safe"}, showResponse)
 })
 
 finishbutton.addEventListener("click", e=>{
     socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "finishing"},showResponse)
+    socket.emit("race-flag:change", {trackMode: "finish"}, showResponse)
     //stop timer
     //socket.emit("")
 })

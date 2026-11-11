@@ -3,7 +3,7 @@ import { getSessionIdxBySessionId} from "./reception.js"
 
 export function setUpControl(socket, races, io) {
     //send initial flag
-    socket.emit("race-flag:status", { rackMode: races.trackMode }) 
+    socket.emit("race-flag:status", { trackMode: races.trackMode }) 
     //send all sessions
     socket.emit("front-desk:state", { sessions: races.sessions }) 
 
