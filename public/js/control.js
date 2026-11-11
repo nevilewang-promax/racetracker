@@ -40,6 +40,28 @@ socket.on("disconnect", () => {
 })
 
 
+
+
+
+//listen buttons
+endbutton.addEventListener("click", e=>{
+    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "ended"}, showResponse)
+})
+startbutton.addEventListener("click", e=>{
+    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "ongoing"},showResponse)
+    //start timer
+    //socket.emit("countdown-started")
+    //change flag
+    socket.emit("race-flag:change", {trackMode: "safe"}, showResponse)
+})
+
+finishbutton.addEventListener("click", e=>{
+    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "finishing"},showResponse)
+    socket.emit("race-flag:change", {trackMode: "danger"}, showResponse)
+    //stop timer
+    //socket.emit("")
+})
+
 //track mode control
 const trackModeButtons = document.getElementById("trackMode")
 const safeBtn = document.getElementById("safe")
@@ -58,6 +80,11 @@ const newFlag = document.getElementById("currentFlag")
 newFlag.textContent= `Current Flag: ${trackMode}`
 
 })
+
+
+
+
+
 
 
 //current session
@@ -119,25 +146,6 @@ socket.on("front-desk:state", ({ sessions }) => {
     finishbutton.disabled = currentSession.status != "ongoing"
 
 
-})
-
-//listen buttons
-endbutton.addEventListener("click", e=>{
-    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "ended"}, showResponse)
-})
-startbutton.addEventListener("click", e=>{
-    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "ongoing"},showResponse)
-    //start timer
-    //socket.emit("countdown-started")
-    //change flag
-    socket.emit("race-flag:change", {trackMode: "safe"}, showResponse)
-})
-
-finishbutton.addEventListener("click", e=>{
-    socket.emit("session-status:change", {sessionId: currentSession.id, newStatus: "finishing"},showResponse)
-    socket.emit("race-flag:change", {trackMode: "finish"}, showResponse)
-    //stop timer
-    //socket.emit("")
 })
 
 
