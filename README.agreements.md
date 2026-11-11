@@ -64,8 +64,8 @@ Keep keys out of Git, URLs, logs, browser storage, and snapshots.
 
 | Direction | Event | Payload |
 |---|---|---|
-| Client → server | `race:start` | `{}` |
-| Client → server | `race: end` | `sessionId` |
+| Client → server | `race-status` | `{sessionId, status}` |
+| 
 
 
 ## Race Rules and Integration

@@ -3,7 +3,7 @@ export function setUpControl(socket, races, io) {
     socket.emit("race-flag:status", { rackMode: races.trackMode }) 
 
     //listen change of trackmode
-    socket.on("track-mode:change",(data, acknowledge)=>{
+    socket.on("race-flag:change",(data, acknowledge)=>{
         
         const {trackMode} = data
         races.trackMode = trackMode
