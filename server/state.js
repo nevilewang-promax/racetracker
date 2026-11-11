@@ -22,12 +22,12 @@ export const races = {
       "entries": [
         {"name": "test1", "carNumber": 1 },
         {"name": "test2", "carNumber": 2 },
-        {"name": "test1", "carNumber": 3 },
-        {"name": "test2", "carNumber": 4 },
-        {"name": "test1", "carNumber": 5 },
-        {"name": "test2", "carNumber": 6 },
-        {"name": "test1", "carNumber": 7 },
-        {"name": "test2", "carNumber": 8 }                        
+        {"name": "test3", "carNumber": 3 },
+        {"name": "test4", "carNumber": 4 },
+        {"name": "test5", "carNumber": 5 },
+        {"name": "test6", "carNumber": 6 },
+        {"name": "test7", "carNumber": 7 },
+        {"name": "test8", "carNumber": 8 }                        
       ],
       "countdown": {}
     }    

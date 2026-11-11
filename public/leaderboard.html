@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="/css/leaderboard.css">
+</head>
+<body>
+    <p id="status-board">Not connected</p>    
+
+    <div class="leader-board">
+        <div class="timer hidden">
+            <span class="mins"></span> : <span class="secs"></span>
+        </div>
+        <div class="current-session">
+            <ul class="driver-details">
+
+            </ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io({ autoConnect: false })
+        socket.auth = {
+            interface: "leader-board",
+        }
+        socket.connect()        
+        const status = document.getElementById("status-board")
+        socket.on('connect', () => {
+            status.innerHTML = "connected"
+        })       
+        
+        /*show current state in leaderboard*/
+        const drivers = document.querySelector(".driver-details")
+
+        socket.on('active-session', (races)=>{
+           const activeRace = selectActiveSession(races.sessions)
+            activeRace.entries.forEach((car) => {
+                let list = document.createElement("li")
+                list.id = car.carNumber
+                list.innerHTML = car.name + ": " + car.carNumber
+                drivers.appendChild(list)
+            });           
+        })
+        
+
+        /*show updated state in leaderboard*/
+
+        socket.on('laptime-added', (activeRace)=>{
+            activeRace.entries.forEach((entry)=>{
+                if (entry.times != null) {
+                    let list = document.getElementById(entry.carNumber)
+                    list.innerHTML = entry.name + ": " + entry.carNumber + "| " + entry.times.length-1 + "| " + getBestLapTime(entry.laptime)
+                }
+            })
+        })
+
+        const mins = document.querySelector(".mins")
+        const secs = document.querySelector(".secs")
+
+        socket.on('countdown-started', (index, countdown)=>{
+            document.querySelector(".timer").classList.remove("hidden")
+            mins.innerHTML = countdown.min
+            secs.innerHTML = countdown.sec
+        })     
+
+        //helpers
+        function selectActiveSession(races) {
+            return races.find((race) => race.status === "ongoing");
+        }        
+        
+        function getBestLapTime(arr) {
+            arr.sort(function (a, b) {  return a - b;  })
+            console.log(arr[0])
+            return arr[0]
+        }
+
+    </script>
+</body>
+</html>

@@ -48,13 +48,15 @@
         })        
 
         const orientation = document.querySelector(".orientation")
-        let countDown = {} 
+        let countDown = {}
 
         socket.on('race-ongoing', (activeRace)=>{
             if (activeRace === null) {
                 status.innerHTML = "no ongoing race"
                 return
             }
+
+            activeRace.countdown = countDown
 
             activeRace.entries.forEach((entry) => {
                 const button = document.createElement("button")
@@ -76,6 +78,7 @@
                         }
                     }
                     carObj.laptime = laptime
+                    socket.emit('laptime-added', activeRace)
                 })
             });
             status.innerHTML = "race is " + activeRace.status

@@ -7,7 +7,8 @@ import { races } from "./server/state.js"
 import { setUpFrontDesk } from "./server/handlers/reception.js"
 import { setUpControl } from "./server/handlers/control.js"
 import { setUpLapline } from "./server/handlers/tracker.js"
-import { setUpCountDown } from "./server/handlers/coutdown.js"
+import { setUpCountDown } from "./server/handlers/countdown.js"
+import { setUpLeaderBoard } from "./server/handlers/leaderboard.js"
 
 const config = loadConfig()
 
@@ -17,7 +18,7 @@ if (config) {
         "/front-desk": ["./public/index.html", "text/html"],
         "/race-control": ["./public/control.html", "text/html"],
         "/lap-line-tracker": ["./public/tracker.html", "text/html"],
-        "/leader-board": ["./public/index.html", "text/html"],
+        "/leader-board": ["./public/leaderboard.html", "text/html"],
         "/next-race": ["./public/index.html", "text/html"],
         "/race-countdown": ["./public/countdown.html", "text/html"],
         "/race-flags": ["./public/flag.html", "text/html"],
@@ -25,6 +26,7 @@ if (config) {
         "/css/control.css": ["./public/css/control.css", "text/css"],
         "/css/tracker.css": ["./public/css/tracker.css", "text/css"],
         "/css/countdown.css": ["./public/css/countdown.css", "text/css"],
+        "/css/leaderboard.css": ["./public/css/leaderboard.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {
@@ -75,6 +77,7 @@ if (config) {
         if(socket.data.role === "public") {
             socket.join("public")
             setUpCountDown(socket, races, io)
+            setUpLeaderBoard(socket, races, io)
         }        
     })
 

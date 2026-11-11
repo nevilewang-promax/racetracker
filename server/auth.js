@@ -39,6 +39,7 @@ export function setUpAuth(io, config) {
             case "next-race":
             case "race-countdown":
             case "race-flags":
+            case "leader-board":    
                 socket.data.role = "public"
                 next();
                 break;
