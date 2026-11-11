@@ -75,9 +75,6 @@ if (config) {
         if(socket.data.role === "public") {
             socket.join("public")
             setUpCountDown(socket, races, io)
-            //socket.on('countdown-started', (index, countdown)=>{
-            //    races.sessions[index].countdown = countdown
-            //})
         }        
     })
 

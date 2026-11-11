@@ -27,17 +27,26 @@
             status.innerHTML = "connected"
         })           
 
-        let index = -1
+        let index = -1 
 
-        socket.on('race-ongoing', (races)=>{
+        //get the flag from server (which is commming)
+        socket.on("race-flag:status", (snapshot)=>{
+            const trackMode = snapshot.trackMode
+            socket.emit('trackMode', trackMode)
+        })               
+
+        socket.on('race-status', (races, trackMode)=>{
             index = getIndexOfOngoingRace(races.sessions)
             const activeRace = selectActiveSession(races.sessions)
-            if (activeRace === null) {
+            if (activeRace === null || trackMode !== "safe") {
                 status.innerHTML = "no ongoing race"
-                return
-            }
+            }          
             startCountdown(races)
-        })
+            if (trackMode === "finish") {
+                console.log("race finished")
+                stopTimer()
+            }              
+        })        
 
         let timer;       
 
@@ -66,6 +75,10 @@
                 races.sessions[index] = activeRace
                 socket.emit('countdown-started', index, {"min":min, "sec":sec})
             }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer)
         }
 
         function displayTime(min, sec) {
