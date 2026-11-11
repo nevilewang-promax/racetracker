@@ -45,7 +45,7 @@ socket.on("front-desk:state", ({ sessions }) => {
     //     return
     // }
 
-    for (const session of sessions) {
+    for (const session of sessions.filter(session=> session.status=="upcoming")) {
         const card = cardTemplate.content.firstElementChild.cloneNode(true)
         const cardHeader = card.querySelector("h3")
         cardHeader.textContent = `Session ${session.id} - ${session.status}`
