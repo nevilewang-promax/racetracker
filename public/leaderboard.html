@@ -10,6 +10,7 @@
     <p id="status-board">Not connected</p>    
 
     <div class="leader-board">
+        <div class="flag">No flag raised yet <span class="color"></span> </div>
         <div class="timer hidden">
             <span class="mins"></span> : <span class="secs"></span>
         </div>
@@ -36,26 +37,35 @@
         const drivers = document.querySelector(".driver-details")
 
         socket.on('active-session', (races)=>{
-           const activeRace = selectActiveSession(races.sessions)
+           const activeRace = selectActiveSession(races.sessions)    
             activeRace.entries.forEach((car) => {
                 let list = document.createElement("li")
                 list.id = car.carNumber
                 list.innerHTML = car.name + ": " + car.carNumber
                 drivers.appendChild(list)
-            });           
+            });              
         })
-        
 
         /*show updated state in leaderboard*/
-
         socket.on('laptime-added', (activeRace)=>{
-            activeRace.entries.forEach((entry)=>{
-                if (entry.times != null) {
-                    let list = document.getElementById(entry.carNumber)
-                    list.innerHTML = entry.name + ": " + entry.carNumber + "| " + entry.times.length-1 + "| " + getBestLapTime(entry.laptime)
+            let entries = activeRace.entries
+            const map = new Map()
+
+            entries.forEach((e)=>{
+                if (e.laptime != undefined) {
+                    map.set(e.carNumber, e)
                 }
             })
+
+            console.log(map)
+            console.log(entries)
+
+            for (const [key, value] of map) {
+                updateState(key, value)
+            }
+            sortBoard()
         })
+
 
         const mins = document.querySelector(".mins")
         const secs = document.querySelector(".secs")
@@ -66,15 +76,67 @@
             secs.innerHTML = countdown.sec
         })     
 
+        socket.on("race-flag:status", (snapshot)=>{
+            const trackMode = snapshot.trackMode
+            document.querySelector(".flag").innerHTML = trackMode
+            if (trackMode === "safe") {
+                document.querySelector(".flag").classList.add("green")
+            }
+        })            
+
         //helpers
         function selectActiveSession(races) {
             return races.find((race) => race.status === "ongoing");
         }        
         
-        function getBestLapTime(arr) {
-            arr.sort(function (a, b) {  return a - b;  })
-            console.log(arr[0])
-            return arr[0]
+        function getIndexOfFastestLap(laptime) {
+            let converted = []
+            for(let i=0; i<laptime.length; i++) {
+                converted.push(laptime[i].min * 60 + laptime[i].sec)
+            }
+            let index = -1
+            let min = converted[0]
+            converted.forEach((num)=>{
+                if (num<min) {
+                    min = num
+                }
+            })
+            for(let i=0; i<converted.length; i++) {
+                if (converted[i] === min) {
+                    index = i
+                }
+            }
+            return {index, min}
+            
+        }
+
+        function updateState(key, value) {
+            let list = document.getElementById(`${key}`)
+            let lapcount = value.times.length - 1
+            const {index, min}  = getIndexOfFastestLap(value.laptime) 
+            list.innerHTML = value.name + ": " + value.carNumber  + "| " + lapcount + "| " 
+            + value.laptime[index].min + ":" + value.laptime[index].sec
+            list.dataset.laptime = min
+        }
+
+        function sortBoard() {
+            const list = document.querySelector(".driver-details")
+            const items = Array.from(list.children)
+
+            items.sort(function(a, b) {
+                const aLaptime = a.dataset.laptime;
+                const bLaptime = b.dataset.laptime;
+
+                if (aLaptime === undefined) return 1;
+                if (bLaptime === undefined) return -1;
+
+                return Number(aLaptime) - Number(bLaptime);
+            });
+
+            items.forEach(function(item) {
+                list.appendChild(item);
+            });            
+
         }
 
     </script>

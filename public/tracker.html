@@ -48,7 +48,7 @@
         })        
 
         const orientation = document.querySelector(".orientation")
-        let countDown = {}
+        let countDown = {}       
 
         socket.on('race-ongoing', (activeRace)=>{
             if (activeRace === null) {
@@ -63,21 +63,24 @@
                 button.innerHTML = entry.carNumber
                 button.classList.add("cars")
                 orientation.appendChild(button)
-                let times = [{"min":9, "sec":60}]
-                let laptime = []
+
                 button.addEventListener("click", ()=> {
                     let carObj = activeRace.entries[entry.carNumber-1]
-                    times.push(countDown)
-                    carObj.times = times
-                    for(let i=0; i<carObj.times.length; i++) {
-                        if (i+1<carObj.times.length) {
-                            laptime.push({
-                                "min": carObj.times[i].min-carObj.times[i+1].min, 
-                                "sec" : carObj.times[i].sec-carObj.times[i+1].sec
-                            })
-                        }
+
+                    if (carObj.times === null || carObj.times === undefined) {
+                        carObj.times = [{"min": 9, "sec": 60}];
                     }
-                    carObj.laptime = laptime
+                    
+                    carObj.laptime = [];
+                    carObj.times.push(countDown);
+
+                    for(let i=1; i<carObj.times.length; i++) {
+                       carObj.laptime.push({
+                            "min": carObj.times[i-1].min-carObj.times[i].min, 
+                            "sec" : carObj.times[i-1].sec-carObj.times[i].sec
+                        })
+                    }
+                    
                     socket.emit('laptime-added', activeRace)
                 })
             });
