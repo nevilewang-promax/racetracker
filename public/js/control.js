@@ -3,7 +3,13 @@ const connectStatus = document.getElementById("status")
 let currentSession = null
 const endbutton = document.getElementById("end-session")
 const startbutton = document.getElementById("start-session")
-const finishbutton = document.getElementById("finish-session")
+
+const trackModeButtons = document.getElementById("trackMode")
+const safeBtn = document.getElementById("safe")
+const hazardBtn = document.getElementById("hazard")
+const dangerBtn = document.getElementById("danger")
+const finishbutton = document.getElementById("finish")
+
 
 
 
@@ -63,10 +69,7 @@ finishbutton.addEventListener("click", e=>{
 })
 
 //track mode control
-const trackModeButtons = document.getElementById("trackMode")
-const safeBtn = document.getElementById("safe")
-const hazardBtn = document.getElementById("hazard")
-const dangerBtn = document.getElementById("danger")
+
 trackModeButtons.addEventListener('click', (event)=>{
 const button = event.target.closest('button');
 if (!button) return
@@ -89,11 +92,11 @@ newFlag.textContent= `Current Flag: ${trackMode}`
 
 //current session
 socket.on("front-desk:state", ({ sessions }) => {
-    currentSession = sessions.find(session => session.status!="ended")
-    endbutton.disabled = true
-    safeBtn.disabled= true
-    hazardBtn.disabled= true
-    dangerBtn.disabled = true
+    currentSession = sessions.find(session => session.status!="ended" && session.entries.length!=0)
+    endbutton.hiddend = true
+    safeBtn.hiddend= true
+    hazardBtn.hiddend= true
+    dangerBtn.hiddend = true
 
     if (!currentSession) {
         document.getElementById("current-session").textContent="No Active Sessions"
@@ -102,9 +105,10 @@ socket.on("front-desk:state", ({ sessions }) => {
 
 
     //enable track buttons only when "ongoing"
-    safeBtn.disabled = currentSession.status != "ongoing"
-    dangerBtn.disabled = currentSession.status != "ongoing"
-    hazardBtn.disabled = currentSession.status != "ongoing"
+    safeBtn.hidden = currentSession.status != "ongoing"
+    dangerBtn.hidden = currentSession.status != "ongoing"
+    hazardBtn.hidden = currentSession.status != "ongoing"
+    finishbutton.hidden = currentSession.status != "ongoing"
 
 
     const template = document.getElementById("session-card-template")
@@ -120,19 +124,21 @@ socket.on("front-desk:state", ({ sessions }) => {
     const rowTemplate = tbody.querySelector("tr")
 
     tbody.replaceChildren()
-    endbutton.disabled = !currentSession.entries.length==0
+    endbutton.hidden = !currentSession.entries.length==0
 
     for (const entry of currentSession.entries) {
         const row = rowTemplate.cloneNode(true)
 
         row.cells[0].textContent = entry.name
         row.cells[1].textContent = `#${entry.carNumber}`
-        const checkbox = row.querySelector(".pit-return-check")
+      const checkbox = row.querySelector(".pit-return-check")
+      checkbox.disabled = currentSession.status != "finishing"
+      
         //check if all return to pit
         checkbox.addEventListener("change", () => {
             const checkboxes = card.querySelectorAll(".pit-return-check")
             const allReturned = checkboxes.length > 0 && [...checkboxes].every(checkbox => checkbox.checked)
-            endbutton.disabled = currentSession.status !== "finishing" || !allReturned
+            endbutton.hidden = currentSession.status !== "finishing" || !allReturned
         })
 
 
@@ -141,9 +147,9 @@ socket.on("front-desk:state", ({ sessions }) => {
     }
 
     //disable buttons
-    startbutton.disabled = currentSession.status!= "upcoming" || currentSession.entries.length==0
+    startbutton.hidden = currentSession.status!= "upcoming" || currentSession.entries.length==0
     
-    finishbutton.disabled = currentSession.status != "ongoing"
+    //endbutton.hidden = currentSession.status != "finishing"
 
 
 })

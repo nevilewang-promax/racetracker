@@ -17,17 +17,7 @@
         <button>Connect</button>
     </form>
 
-    <div id="main" class = "hidden">
-        <div id="trackMode" class="buttons">
-            <p id="currentFlag">Current Flag: finish</p>
-            <button id="safe" disabled>🟢</button>
-            <button id="hazard" disabled>🟡</button>
-            <button id="danger" disabled>🔴</button>
-            <!-- <button id="finish">🏁</button> -->
 
-        </div>
-        
-    </div>
 
     <div id="current-session" class = "hidden"></div>
     <template id="session-card-template">
@@ -67,13 +57,23 @@
 
 
     <div id="session-control-btns" class = "hidden">
-        <button id="start-session" class = "control-btn" disabled>START</button>
-        <button id="finish-session" class = "control-btn" disabled>FINISH</button>
-        <button id="end-session" class = "control-btn" disabled>END</button>
+        <button id="start-session" class = "control-btn" hidden>START</button>
+        <!-- <button id="finish-session" class = "control-btn" hidden>FINISH</button> -->
+        <button id="end-session" class = "control-btn" hidden>END</button>
     </div>
     
 
+    <div id="main" class = "hidden">
+        <div id="trackMode" class="buttons">
+            <p id="currentFlag">Current Flag: finish</p>
+            <button id="safe" hidden>🟢</button>
+            <button id="hazard" hidden>🟡</button>
+            <button id="danger" hidden>🔴</button>
+            <button id="finish" hidden>🏁</button>
 
+        </div>
+        
+    </div>
 
 
 
