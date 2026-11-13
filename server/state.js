@@ -73,5 +73,5 @@ export const races = {
     }
   ],
   "nextSessionId": 8,
-  "trackMode": "finish" //safe hazard dander finish
+  "trackMode": "danger" //safe hazard dander finish
 }

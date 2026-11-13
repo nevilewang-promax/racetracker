@@ -23,6 +23,7 @@ if (config) {
         "/css/control.css": ["./public/css/control.css", "text/css"],
         "/css/reception.css": ["./public/css/reception.css", "text/css"],
         "/js/reception.js": ["./public/js/reception.js", "text/javascript"],
+        "/js/control.js": ["./public/js/control.js", "text/javascript"],
     }
 
     const server = createServer(async (req, res) => {
@@ -53,12 +54,12 @@ if (config) {
         console.log("client connected")
         socket.emit("server:welcome", "welcome to Racetracker")
         if (socket.data.role === "receptionist") {
-            socket.join("front-desk")
+            socket.join("staff")
             socket.join("public")
             setUpFrontDesk(socket, races, io)
         }
         if (socket.data.role === "safety") {
-            socket.join("race-control")
+            socket.join("staff")
             socket.join("public")
             setUpControl(socket, races, io)
         }

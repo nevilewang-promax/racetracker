@@ -8,84 +8,84 @@
 
 
 <body>
-    <h1>Race Control</h1>
-    <form id="login" class="">
-        <input id="key" type="password" placeholder="Race Controller key" required>
+    <div class="header-row">
+        <h1>Race Controller</h1>
+        <p id="status">Not connected</p>
+    </div>
+    <form id="login" class="password">
+        <input id="key" type="password" placeholder="Controller key" required>
         <button>Connect</button>
     </form>
-    <p id="status">Not connected</p>
+
+
+
+    <div id="current-session" class = "hidden"></div>
+    <template id="session-card-template">
+    <article class="session-card">
+        <header class="session-card-header">
+            <div class="session-title-row">
+                <h3>No sessions</h3>
+            </div>
+            <p>0 / 8 drivers</p>
+        </header>
+
+        <table class="driver-table">
+            <thead>
+                <tr>
+                    <th scope="col">Driver</th>
+                    <th scope="col">Car</th>
+                    <th scope="col">Pit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <!-- checkbox -->
+                        <input type="checkbox" class="pit-return-check">
+                            
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </article>
+</template>
+
+
+
+
+    <div id="session-control-btns" class = "hidden">
+        <button id="start-session" class = "control-btn" hidden>START</button>
+        <!-- <button id="finish-session" class = "control-btn" hidden>FINISH</button> -->
+        <button id="end-session" class = "control-btn" hidden>END</button>
+    </div>
+    
 
     <div id="main" class = "hidden">
         <div id="trackMode" class="buttons">
-            <p>Track Mode</p>
-            <button id="safe">🟢</button>
-            <button id="hazard">🟡</button>
-            <button id="danger">🔴</button>
-            <button id="finish">🏁</button>
+            <p id="currentFlag">Current Flag: finish</p>
+            <button id="safe" hidden>🟢</button>
+            <button id="hazard" hidden>🟡</button>
+            <button id="danger" hidden>🔴</button>
+            <button id="finish" hidden>🏁</button>
 
         </div>
-        <p id="currentFlag">finished</p>
+        
     </div>
-    
-    
-</body>
+
+
+
+
+
+
+
 
 
 
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io({ autoConnect: false })
-    const status = document.getElementById("status")
-
-    //check key
-    document.getElementById("login").addEventListener("submit", (event) => {
-            event.preventDefault()
-            socket.auth = {
-                interface: "race-control",
-                accessKey: document.getElementById("key").value
-            }
-            socket.connect()
-    })
-
-    socket.on("server:welcome", (message) => {
-        console.log(message)
-    })
-
-    socket.on("connect_error", (error) => {
-        status.textContent = error.data?.code ?? error.message
-        testButton.disabled = true
-    })
-
-    socket.on("disconnect", () => {
-        status.textContent = "Disconnected"
-        testButton.disabled = true
-    })
-
-    socket.on('connect', () => {
-        document.getElementById('login').classList.add('hidden')
-        document.getElementById('main').classList.remove('hidden')
-    })
-
-    const trackModeButtons = document.getElementById("trackMode")
-    trackModeButtons.addEventListener('click', (event)=>{
-        const button = event.target.closest('button');
-        if (!button) return
-        
-        socket.emit("track-mode:change", {trackMode: button.id}, showResponse)
-    })
-    
-    socket.on("race-flag:status", (snapshot)=>{
-    const trackMode = snapshot.trackMode
-    const newFlag = document.getElementById("currentFlag")
-    newFlag.textContent= trackMode
-
-    })
-
-    function showResponse(response) {
-        console.log(response)
-    }
-
-
-
-</script>
+<script src="/js/control.js"></script>
+</body>
+</html>

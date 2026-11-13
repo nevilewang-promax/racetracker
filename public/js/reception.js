@@ -45,7 +45,7 @@ socket.on("front-desk:state", ({ sessions }) => {
     //     return
     // }
 
-    for (const session of sessions) {
+    for (const session of sessions.filter(session=> session.status=="upcoming")) {
         const card = cardTemplate.content.firstElementChild.cloneNode(true)
         const cardHeader = card.querySelector("h3")
         cardHeader.textContent = `Session ${session.id} - ${session.status}`
@@ -187,34 +187,34 @@ socket.on("front-desk:state", ({ sessions }) => {
 
 
 
-    //create new session
-    const createSsBtn = document.getElementById("create-session")
-    createSsBtn.addEventListener("click",()=>{
-        socket.emit("session:create", {}, showResponse)
-        sessionList.scrollTo({
-            top: sessionList.scrollHeight,
-            behavior: "smooth"
-        })
-    })
-    //back to top
-    const toTopbtn = document.getElementById("back-top")
-    toTopbtn.addEventListener("click",()=>{
-        sessionList.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        })
-    })
 
-    //to upcoming sessions
-    document.getElementById("to-upcoming").addEventListener("click", () => {
-        const nextCard = sessionList.querySelector('[data-status="upcoming"]')
-
-        if (nextCard) {
-            nextCard.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
+})
+//create new session
+const createSsBtn = document.getElementById("create-session")
+createSsBtn.addEventListener("click",()=>{
+    socket.emit("session:create", {}, showResponse)
+    sessionList.scrollTo({
+        top: sessionList.scrollHeight,
+        behavior: "smooth"
+    })
+})
+//back to top
+const toTopbtn = document.getElementById("back-top")
+toTopbtn.addEventListener("click",()=>{
+    sessionList.scrollTo({
+        top: 0,
+        behavior: "smooth"
     })
 })
 
+//to upcoming sessions
+document.getElementById("to-upcoming").addEventListener("click", () => {
+    const nextCard = sessionList.querySelector('[data-status="upcoming"]')
+
+    if (nextCard) {
+        nextCard.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+})
 function showResponse(response) {
     console.log(response)
 
