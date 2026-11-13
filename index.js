@@ -9,6 +9,7 @@ import { setUpControl } from "./server/handlers/control.js"
 import { setUpLapline } from "./server/handlers/tracker.js"
 import { setUpCountDown } from "./server/handlers/countdown.js"
 import { setUpLeaderBoard } from "./server/handlers/leaderboard.js"
+import { setUpNextRace } from "./server/handlers/nextrace.js"
 
 const config = loadConfig()
 
@@ -19,7 +20,7 @@ if (config) {
         "/race-control": ["./public/control.html", "text/html"],
         "/lap-line-tracker": ["./public/tracker.html", "text/html"],
         "/leader-board": ["./public/leaderboard.html", "text/html"],
-        "/next-race": ["./public/index.html", "text/html"],
+        "/next-race": ["./public/nextrace.html", "text/html"],
         "/race-countdown": ["./public/countdown.html", "text/html"],
         "/race-flags": ["./public/flag.html", "text/html"],
         "/css/flag.css": ["./public/css/flag.css", "text/css"],
@@ -27,6 +28,7 @@ if (config) {
         "/css/tracker.css": ["./public/css/tracker.css", "text/css"],
         "/css/countdown.css": ["./public/css/countdown.css", "text/css"],
         "/css/leaderboard.css": ["./public/css/leaderboard.css", "text/css"],
+        "/css/nextrace.css": ["./public/css/nextrace.css", "text/css"],
     }
 
     const server = createServer(async (req, res) => {
@@ -78,6 +80,7 @@ if (config) {
             socket.join("public")
             setUpCountDown(socket, races, io)
             setUpLeaderBoard(socket, races, io)
+            setUpNextRace(socket, races, io)
         }        
     })
 

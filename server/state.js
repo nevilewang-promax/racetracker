@@ -3,7 +3,7 @@ export const races = {
   "sessions": [
     {
       "id": 1,
-      "status": "upcoming",
+      "status": "upcoming", //ongoing, //finished //ended
       "entries": [
         {"name": "Alice", "carNumber": 1 },
         {"name": "Bob", "carNumber": 2 }
@@ -33,5 +33,5 @@ export const races = {
     }    
   ],
   "nextSessionId": 3,
-  "trackMode": "finish"
+  "trackMode": "finish" //safe //hazard //danger //finish
 }

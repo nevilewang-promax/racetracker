@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Race</title>
+    <link rel="stylesheet" href="/css/nextrace.css">
+</head>
+<body>
+    <div class="container-nextrace">
+        <p class="connection-status">not connected</p>
+        <div class="race">
+            <h2 class="current-race">Please Proceed to Paddock</h2>
+            <ul class="current-race-details">
+
+            </ul>
+        </div>
+    </div>
+
+   <script src="/socket.io/socket.io.js"></script>
+   <script> 
+        const socket = io({ autoConnect: false })
+        socket.auth = {
+            interface: "next-race",
+        }
+        socket.connect()        
+        const status = document.querySelector(".connection-status")
+        socket.on('connect', () => {
+            status.innerHTML = "connected"
+        })           
+
+        const race = document.querySelector(".race")
+        const list = document.querySelector(".current-race-details")
+        const nextSession = []
+
+        //listen and display current race until it starts
+        socket.on('current-next-races', (currentRace, nextRace)=> {
+            nextSession.push(nextRace)
+            currentRace.entries.forEach((driver) => {
+                const item = document.createElement("li")
+                item.classList.add("car-details")
+                item.innerHTML = driver.name + " " + driver.carNumber
+                list.appendChild(item)
+            });
+        })
+
+        //display next race after current starts
+        socket.on("race-flag:status", (snapshot)=>{
+            const trackMode = snapshot.trackMode
+            if (trackMode === "safe") {
+                list.remove()
+                const updatedList = document.createElement("ul")
+                updatedList.classList.add("next-race-details")
+                const nextRace = nextSession[0]
+                const header = document.querySelector(".current-race")
+                header.innerHTML = "Next Race"
+                nextRace.entries.forEach((driver) => {
+                    const item = document.createElement("li")
+                    item.classList.add("car-details")
+                    item.innerHTML = driver.name + " " + driver.carNumber
+                    updatedList.appendChild(item)
+                });                
+                console.log(updatedList)
+                race.appendChild(updatedList)
+            }
+        })               
+    </script>
+</body>
+</html>
