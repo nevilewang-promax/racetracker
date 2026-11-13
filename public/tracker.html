@@ -13,12 +13,11 @@
         <button>Connect</button>
     </form>
     <p id="statusTracker">Not connected</p>    
-
+    <p class="race-mode"></p>    
     <div id="main-tracker" class="hidden">
         <div class="race-status"></div>
         <div class="container">
-            <div class="orientation">
-            </div>
+            <div class="orientation"></div>
         </div>
     </div>
 
@@ -28,10 +27,10 @@
 
    <script src="/socket.io/socket.io.js"></script>
    <script> 
+        //-----------------------page setup---------------------------------------
         const socket = io({ autoConnect: false })
         const status = document.getElementById("statusTracker")
 
-        //check key
         document.getElementById("loginTracker").addEventListener("submit", (event) => {
                 event.preventDefault()
                 socket.auth = {
@@ -47,8 +46,13 @@
             status.innerHTML = "connected"
         })        
 
+        
         const orientation = document.querySelector(".orientation")
-        let countDown = {}       
+        const raceMode = document.querySelector(".race-mode")
+        let countDown = {}    
+        const flags = []   
+
+        //-----------------------ongoing race---------------------------------------
 
         socket.on('race-ongoing', (activeRace)=>{
             if (activeRace === null) {
@@ -56,6 +60,7 @@
                 return
             }
 
+            let latestFlag = flags[flags.length-1]
             activeRace.countdown = countDown
 
             activeRace.entries.forEach((entry) => {
@@ -84,12 +89,29 @@
                     socket.emit('laptime-added', activeRace)
                 })
             });
-            status.innerHTML = "race is " + activeRace.status
+            status.innerHTML = "Race session is " + activeRace.status
         })
         
+        //-----------------------ended race---------------------------------------        
+        socket.on('session-ended', (ended)=> {
+            if (ended) {
+                document.querySelector("#main-tracker").remove()
+                raceMode.remove()
+                status.innerHTML = "Race session is ended"
+            }
+        })
+
+        //track countdown
         socket.on('countdown-started', (index, countdown)=>{
             countDown = countdown
-        })       
+        })   
+        
+        //track flag
+        socket.on("race-flag:status", (snapshot)=>{
+            const trackMode = snapshot.trackMode
+            raceMode.innerHTML = "Race mode: " + trackMode
+        })   
+   
 
    </script>
 </html>

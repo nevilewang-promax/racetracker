@@ -22,7 +22,7 @@
             <button id="hazard">🟡</button>
             <button id="danger">🔴</button>
             <button id="finish">🏁</button>
-
+            <button class="end">End session</button>
         </div>
         <p id="currentFlag">finished</p>
     </div>
@@ -86,6 +86,12 @@
         console.log(response)
     }
 
+    const end = document.querySelector(".end")
+    end.addEventListener("click", ()=>{
+        const state = true
+        console.log("ended clicked")
+        socket.emit("session-end", state)
+    })
 
 
 </script>
