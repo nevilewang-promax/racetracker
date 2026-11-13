@@ -29,7 +29,7 @@
 
         let index = -1 
 
-        //get the flag from server (which is commming)
+        //track flag
         socket.on("race-flag:status", (snapshot)=>{
             const trackMode = snapshot.trackMode
             socket.emit('trackMode', trackMode)
@@ -38,10 +38,12 @@
         socket.on('race-status', (races, trackMode)=>{
             index = getIndexOfOngoingRace(races.sessions)
             const activeRace = selectActiveSession(races.sessions)
-            if (activeRace === null || trackMode !== "safe") {
+            if (activeRace === null) {
                 status.innerHTML = "no ongoing race"
-            }          
-            startCountdown(races)
+            }         
+            if (trackMode === "safe") {
+                startCountdown(races)
+            } 
             if (trackMode === "finish") {
                 console.log("race finished")
                 stopTimer()
