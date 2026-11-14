@@ -72,7 +72,7 @@ if (config) {
             setUpControl(socket, races, io)
         }
         if(socket.data.role === "observer") {
-            ssocket.join("staff")
+            socket.join("staff")
             socket.join("public")
             setUpLapline(socket, races, io)
         }        

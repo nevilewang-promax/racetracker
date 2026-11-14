@@ -10,7 +10,7 @@
     <div class="container-nextrace">
         <p class="connection-status">not connected</p>
         <div class="race">
-            <h2 class="current-race">Please Proceed to Paddock</h2>
+            <h2 class="message"></h2>
             <ul class="current-race-details">
 
             </ul>
@@ -23,47 +23,50 @@
         socket.auth = {
             interface: "next-race",
         }
-        socket.connect()        
+        socket.connect()           
+
         const status = document.querySelector(".connection-status")
+        const race = document.querySelector(".race")
+        const message = document.querySelector(".message")
+        const list = document.querySelector(".current-race-details")
+
         socket.on('connect', () => {
             status.innerHTML = "connected"
-        })           
+        })                
 
-        const race = document.querySelector(".race")
-        const list = document.querySelector(".current-race-details")
-        const nextSession = []
-
-        //listen and display current race until it starts
-        socket.on('current-next-races', (currentRace, nextRace)=> {
-            nextSession.push(nextRace)
-            currentRace.entries.forEach((driver) => {
-                const item = document.createElement("li")
-                item.classList.add("car-details")
-                item.innerHTML = driver.name + " " + driver.carNumber
-                list.appendChild(item)
-            });
+        //listen and display upcomming race until it starts
+        socket.on('upcomming-race', (upcommingRace)=> {
+            message.innerHTML = "Please Proceed to Paddock"
+            updatePage(upcommingRace, list, message)
         })
 
-        //display next race after current starts
-        socket.on("race-flag:status", (snapshot)=>{
-            const trackMode = snapshot.trackMode
-            if (trackMode === "safe") {
-                list.remove()
-                const updatedList = document.createElement("ul")
-                updatedList.classList.add("next-race-details")
-                const nextRace = nextSession[0]
-                const header = document.querySelector(".current-race")
-                header.innerHTML = "Next Race"
-                nextRace.entries.forEach((driver) => {
-                    const item = document.createElement("li")
-                    item.classList.add("car-details")
-                    item.innerHTML = driver.name + " " + driver.carNumber
-                    updatedList.appendChild(item)
-                });                
-                console.log(updatedList)
-                race.appendChild(updatedList)
+        
+        //display next race after upcomming race switched to ongoing
+        socket.on("front-desk:state", (races)=>{
+            message.innerHTML = "Next Race"
+            const nextRace = selectUpcommingSession(races.sessions)
+            updatePage(nextRace, list, message)          
+        })             
+
+        //helpers
+        function updatePage(raceData, list, message) {
+            if (raceData === null || raceData === undefined) {
+                message.innerHTML = "No upcomming race"
+                return
             }
-        })               
+            list.innerHTML = "";
+            raceData.entries.forEach((driver) => {
+                const item = document.createElement("li")
+                item.classList.add("car-details")
+                item.textContent = `${driver.name} ${driver.carNumber}`
+                list.appendChild(item)
+            })        
+        }
+
+        function selectUpcommingSession(races) {
+            return races.find((race) => race.status === "upcoming");
+        }               
+
     </script>
 </body>
 </html>
