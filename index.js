@@ -59,23 +59,20 @@ if (config) {
         console.log("client connected")
         socket.emit("server:welcome", "welcome to Racetracker")
         if (socket.data.role === "receptionist") {
-            socket.join("front-desk")
+            socket.join("staff")
             socket.join("public")
             setUpFrontDesk(socket, races, io)
         }
         if (socket.data.role === "safety") {
-            socket.join("race-control")
+            socket.join("staff")
             socket.join("public")
             setUpControl(socket, races, io)
         }
-        if(socket.data.role==="public"){
-            socket.join("public")
-        }
         if(socket.data.role === "observer") {
-            socket.join("lap-line-tracker")
+            ssocket.join("staff")
             socket.join("public")
             setUpLapline(socket, races, io)
-        }
+        }        
         if(socket.data.role === "public") {
             socket.join("public")
             setUpCountDown(socket, races, io)
