@@ -1,3 +1,38 @@
 .hidden{
     display: none
 }
+
+.header-row {
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px 0;
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: system-ui, sans-serif;
+}
+
+.header-row h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 650;
+}
+
+.header-row #status {
+    margin: 0 0 0 auto;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#login {
+    text-align: center;
+}

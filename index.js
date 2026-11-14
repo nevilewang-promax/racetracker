@@ -16,7 +16,7 @@ const config = loadConfig()
 if (config) {
     const routes = {
         "/": ["./public/index.html", "text/html"],
-        "/front-desk": ["./public/index.html", "text/html"],
+        "/front-desk": ["./public/reception.html", "text/html"],
         "/race-control": ["./public/control.html", "text/html"],
         "/lap-line-tracker": ["./public/tracker.html", "text/html"],
         "/leader-board": ["./public/leaderboard.html", "text/html"],
@@ -29,6 +29,9 @@ if (config) {
         "/css/countdown.css": ["./public/css/countdown.css", "text/css"],
         "/css/leaderboard.css": ["./public/css/leaderboard.css", "text/css"],
         "/css/nextrace.css": ["./public/css/nextrace.css", "text/css"],
+        "/css/reception.css": ["./public/css/reception.css", "text/css"],
+        "/js/reception.js": ["./public/js/reception.js", "text/javascript"],
+        "/js/control.js": ["./public/js/control.js", "text/javascript"],
     }
 
     const server = createServer(async (req, res) => {

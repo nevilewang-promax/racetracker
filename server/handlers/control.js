@@ -1,9 +1,14 @@
+
+import { getSessionIdxBySessionId} from "./reception.js"
+
 export function setUpControl(socket, races, io) {
     //send initial flag
-    socket.emit("race-flag:status", { rackMode: races.trackMode }) 
+    socket.emit("race-flag:status", { trackMode: races.trackMode }) 
+    //send all sessions
+    socket.emit("front-desk:state", { sessions: races.sessions }) 
 
     //listen change of trackmode
-    socket.on("track-mode:change",(data, acknowledge)=>{
+    socket.on("race-flag:change",(data, acknowledge)=>{
         
         const {trackMode} = data
         races.trackMode = trackMode
@@ -12,16 +17,15 @@ export function setUpControl(socket, races, io) {
         io.to("public").emit("race-flag:status", {trackMode: races.trackMode})
     })
 
-    socket.on("session-end", (sessionEnded)=>{
-        console.log("race ended")
-        if (sessionEnded) {
-            races.sessions.forEach(session => {
-                if (session.status === "ongoing") {
-                    session.status = "ended"
-                }
-            });
-        }
-        const ended = true
-        io.to("public").emit("session-ended", ended)
+    //listen change of session status
+    socket.on("session-status:change", (data,acknowledge)=>{
+        const {sessionId, newStatus} = data
+        const sessionInd = getSessionIdxBySessionId(races, sessionId)
+
+        //check if changing is legal: reject finish>>ongoing, end>>finish>>ongoing
+        
+        races.sessions[sessionInd].status= newStatus
+        acknowledge({ok:true})
+        io.to("staff").emit("front-desk:state", { sessions: races.sessions })
     })
 }
